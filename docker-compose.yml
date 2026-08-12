@@ -24,7 +24,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./certs:/etc/nginx/certs:ro
+      - ./certs/:/etc/ssl:ro
       - staticfiles:/app/staticfiles:ro
     networks:
       - arileasing_network
