@@ -36,6 +36,17 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 _allowed_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = _allowed_hosts.split(',') if _allowed_hosts else (['*'] if DEBUG else [])
 
+_csrf_trusted_origins = os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '')
+CSRF_TRUSTED_ORIGINS = (
+    _csrf_trusted_origins.split(',')
+    if _csrf_trusted_origins
+    else [f'https://{host}' for host in ALLOWED_HOSTS if host and host != '*']
+)
+
+# nginx terminates TLS and forwards plain HTTP; without this Django thinks every
+# request is insecure, which breaks CSRF validation and secure cookies over HTTPS.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Application definition
 
