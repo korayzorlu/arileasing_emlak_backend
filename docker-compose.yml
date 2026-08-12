@@ -10,6 +10,8 @@ services:
     volumes:
       - ./data:/app/data
       - staticfiles:/app/staticfiles
+    networks:
+      - arleasing_network
 
   nginx:
     image: nginx:1.27-alpine
@@ -24,6 +26,12 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./certs:/etc/nginx/certs:ro
       - staticfiles:/app/staticfiles:ro
+    networks:
+      - arleasing_network
 
 volumes:
   staticfiles:
+
+networks:
+  arleasing_network:
+    external: true
