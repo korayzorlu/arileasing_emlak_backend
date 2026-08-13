@@ -25,7 +25,9 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./certs/:/etc/ssl:ro
-      - staticfiles:/app/staticfiles:ro
+      #- staticfiles:/app/staticfiles:ro
+      - ./staticfiles:/staticfiles
+      - ./media:/media
     networks:
       - arileasing_network
 
