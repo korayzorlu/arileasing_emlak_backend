@@ -31,8 +31,8 @@ services:
     networks:
       - arileasing_network
 
-volumes:
-  staticfiles:
+# volumes:
+#   staticfiles:
 
 networks:
   arileasing_network:
