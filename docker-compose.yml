@@ -9,7 +9,7 @@ services:
       - .env
     volumes:
       - ./data:/app/data
-      - staticfiles:/app/staticfiles
+      #- staticfiles:/app/staticfiles
     networks:
       - arileasing_network
 
