@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 
-from .models import OTPCode, User
+from .models import OTPCode, User, AuthEvent, EventType, FailReason
 
 
 @admin.register(User)
@@ -49,3 +49,20 @@ class OTPCodeAdmin(admin.ModelAdmin):
     list_display = ["phone_number", "code", "created_at", "expires_at", "attempts", "is_used"]
     search_fields = ["phone_number"]
     readonly_fields = ["created_at"]
+
+@admin.register(AuthEvent)
+class AuthEventAdmin(admin.ModelAdmin):
+    list_display = ["event_type", "user", "username_attempted", "date", "failure_reason"]
+    list_display_links = ["user"]
+    search_fields = ["user__username","user__email","user__first_name","user__last_name"]
+    list_filter = ["event_type", "failure_reason"]
+    inlines = []
+    ordering = ["-date"]
+    autocomplete_fields = ["user"]
+
+    def user(self,obj):
+        return obj.user.username if obj.user else ""
+
+    
+    class Meta:
+        model = AuthEvent
