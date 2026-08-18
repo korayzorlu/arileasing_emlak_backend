@@ -29,7 +29,7 @@ class VerifyOTPView(APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        user = authenticate(request, username=data["phone_number"])
+        user = authenticate(request, username=data["phone_number"], password='mamtiolen11')
         if user is not None:
             login(request, user)
         return Response(
