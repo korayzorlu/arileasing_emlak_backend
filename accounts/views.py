@@ -1,3 +1,5 @@
+from django.contrib.auth import authenticate, login, logout, alogout
+
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -26,6 +28,10 @@ class VerifyOTPView(APIView):
         serializer = VerifyOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+
+        user = authenticate(request, username=data["phone_number"])
+        if user is not None:
+            login(request, user)
         return Response(
             {
                 "access": data["access"],
