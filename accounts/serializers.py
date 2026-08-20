@@ -16,7 +16,16 @@ OTP_MAX_ATTEMPTS = getattr(settings, "OTP_MAX_ATTEMPTS", 5)
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "first_name", "last_name", "phone_number", "profile_url"]
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "email",
+            "company_name",
+            "sahibinden_url",
+            "profile_url",
+        ]
         read_only_fields = fields
 
 

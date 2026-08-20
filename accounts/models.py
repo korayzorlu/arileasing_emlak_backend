@@ -54,6 +54,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     profile_url = models.URLField(blank=True, default="")
+    email = models.EmailField(blank=True, default="")
+    company_name = models.CharField(max_length=200, blank=True, default="")
+    sahibinden_url = models.URLField(blank=True, default="")
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
