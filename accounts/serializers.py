@@ -26,7 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             "sahibinden_url",
             "profile_url",
         ]
-        read_only_fields = fields
+        read_only_fields = ["id", "phone_number", "company_name", "profile_url"]
 
 
 class RequestOTPSerializer(serializers.Serializer):
