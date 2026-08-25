@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'accounts',
     'properties',
+    'whatsapp',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +104,10 @@ TURATEL_PASSWORD = os.environ.get('TURATEL_PASSWORD', '')
 TURATEL_USER_CODE = int(os.environ.get('TURATEL_USER_CODE', '0'))
 TURATEL_ACCOUNT_ID = int(os.environ.get('TURATEL_ACCOUNT_ID', '0'))
 TURATEL_ORIGINATOR = os.environ.get('TURATEL_ORIGINATOR', 'ARIFINANSAL')
+
+# Shared secret the external application uses to push WhatsApp messages into
+# /api/whatsapp/ingest/. Must be set in .env in production.
+WHATSAPP_INGEST_API_KEY = os.environ.get('WHATSAPP_INGEST_API_KEY', '')
 
 ROOT_URLCONF = 'config.urls'
 

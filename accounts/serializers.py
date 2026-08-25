@@ -39,8 +39,10 @@ class UserSerializer(serializers.ModelSerializer):
             "company_name",
             "sahibinden_url",
             "profile_url",
+            "is_admin",
+            "is_yetkili",
         ]
-        read_only_fields = ["id", "phone_number", "company_name", "profile_url"]
+        read_only_fields = ["id", "phone_number", "company_name", "profile_url", "is_admin", "is_yetkili"]
 
 
 class RegisterSerializer(serializers.Serializer):

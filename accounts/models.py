@@ -62,6 +62,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Admin-added users (the original flow) are approved by default; self-registration
     # explicitly overrides this to False so new sign-ups wait for manual approval.
     is_approved = models.BooleanField(default=True)
+    # Grants access to internal/staff-only app screens (e.g. WhatsApp Mesajları) that
+    # aren't meant for regular customers. Distinct from is_staff, which is Django-admin access.
+    is_admin = models.BooleanField(default=False)
+    is_yetkili = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
 
