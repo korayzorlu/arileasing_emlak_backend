@@ -13,6 +13,20 @@ OTP_TTL_MINUTES = getattr(settings, "OTP_CODE_TTL_MINUTES", 5)
 OTP_MAX_ATTEMPTS = getattr(settings, "OTP_MAX_ATTEMPTS", 5)
 
 
+def send_otp_code(phone_number: str) -> None:
+    code = f"{random.randint(0, 999999):06d}"
+    otp = OTPCode.objects.create(
+        phone_number=phone_number,
+        code=code,
+        expires_at=timezone.now() + timedelta(minutes=OTP_TTL_MINUTES),
+    )
+    try:
+        send_sms(phone_number, f"Doğrulama kodunuz: {code}. Bu kodu kimseyle paylaşmayın.")
+    except SmsSendError:
+        otp.delete()
+        raise serializers.ValidationError("Kod gönderilemedi. Lütfen daha sonra tekrar deneyin.")
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -29,6 +43,27 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "phone_number", "company_name", "profile_url"]
 
 
+class RegisterSerializer(serializers.Serializer):
+    phone_number = serializers.CharField()
+    first_name = serializers.CharField(max_length=150)
+    last_name = serializers.CharField(max_length=150)
+
+    def validate_phone_number(self, value):
+        if User.objects.filter(phone_number=value).exists():
+            raise serializers.ValidationError("Bu telefon numarası zaten kayıtlı.")
+        return value
+
+    def save(self):
+        user = User.objects.create(
+            phone_number=self.validated_data["phone_number"],
+            first_name=self.validated_data["first_name"],
+            last_name=self.validated_data["last_name"],
+            is_approved=False,
+        )
+        send_otp_code(user.phone_number)
+        return user
+
+
 class RequestOTPSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
 
@@ -38,18 +73,7 @@ class RequestOTPSerializer(serializers.Serializer):
         return value
 
     def save(self):
-        phone_number = self.validated_data["phone_number"]
-        code = f"{random.randint(0, 999999):06d}"
-        otp = OTPCode.objects.create(
-            phone_number=phone_number,
-            code=code,
-            expires_at=timezone.now() + timedelta(minutes=OTP_TTL_MINUTES),
-        )
-        try:
-            send_sms(phone_number, f"Doğrulama kodunuz: {code}. Bu kodu kimseyle paylaşmayın.")
-        except SmsSendError:
-            otp.delete()
-            raise serializers.ValidationError("Kod gönderilemedi. Lütfen daha sonra tekrar deneyin.")
+        send_otp_code(self.validated_data["phone_number"])
 
 
 class VerifyOTPSerializer(serializers.Serializer):
@@ -82,6 +106,11 @@ class VerifyOTPSerializer(serializers.Serializer):
 
         otp.is_used = True
         otp.save(update_fields=["is_used"])
+
+        if not user.is_approved:
+            raise serializers.ValidationError(
+                "Üyeliğiniz henüz onay aşamasındadır. Onaylandığında bilgilendirileceksiniz."
+            )
 
         refresh = RefreshToken.for_user(user)
         attrs["access"] = str(refresh.access_token)

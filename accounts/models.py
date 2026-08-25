@@ -59,6 +59,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     sahibinden_url = models.URLField(blank=True, default="")
 
     is_active = models.BooleanField(default=True)
+    # Admin-added users (the original flow) are approved by default; self-registration
+    # explicitly overrides this to False so new sign-ups wait for manual approval.
+    is_approved = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
 

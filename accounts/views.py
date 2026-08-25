@@ -4,7 +4,22 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import RequestOTPSerializer, UserSerializer, VerifyOTPSerializer
+from .serializers import (
+    RegisterSerializer,
+    RequestOTPSerializer,
+    UserSerializer,
+    VerifyOTPSerializer,
+)
+
+
+class RegisterView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"detail": "Kayıt alındı, telefonunuza doğrulama kodu gönderildi."})
 
 
 class RequestOTPView(APIView):
