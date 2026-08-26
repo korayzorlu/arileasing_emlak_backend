@@ -57,10 +57,10 @@ class VerifyOTPView(APIView):
         )
 
 
-class MeView(generics.RetrieveUpdateAPIView):
+class MeView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ["get", "patch", "head", "options"]
+    http_method_names = ["get", "patch", "delete", "head", "options"]
 
     def get_object(self):
         return self.request.user
