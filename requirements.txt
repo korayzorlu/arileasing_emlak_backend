@@ -9,6 +9,7 @@ gunicorn==26.0.0
 idna==3.18
 packaging==26.2
 PyJWT==2.13.0
+PyMuPDF==1.28.2
 python-dotenv==1.2.2
 requests==2.34.2
 sqlparse==0.5.5

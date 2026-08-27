@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/auth/', include('accounts.urls')),
     path('api/properties/', include('properties.urls')),
     path('api/whatsapp/', include('whatsapp.urls')),
+    path('api/brochure/', include('brochure.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
