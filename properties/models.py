@@ -10,6 +10,7 @@ class Property(models.Model):
     price = models.DecimalField(max_digits=14, decimal_places=2)
     term_months = models.PositiveIntegerField()
     down_payment = models.DecimalField(max_digits=14, decimal_places=2)
+    listing_url = models.URLField(max_length=1000, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
