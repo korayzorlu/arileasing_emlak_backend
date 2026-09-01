@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.core.validators import RegexValidator
@@ -7,6 +9,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 import uuid
+
+logger = logging.getLogger("accounts.models")
 
 phone_validator = RegexValidator(
     regex=r"^\+90[0-9]{10}$",
@@ -69,10 +73,43 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
 
+    # One-shot trigger, not a standing preference: check this together with is_approved
+    # and save to fire the "your membership has been approved" SMS. It only fires when
+    # both are True in the very same save — nothing else (is_active, is_admin, ...) is
+    # considered — and it's flipped back to False as part of that save, so a later,
+    # unrelated edit to an already-approved user never re-sends it by accident.
+    send_approval_sms = models.BooleanField(
+        default=False,
+        verbose_name="Onay SMS'i Gönder",
+        help_text=(
+            "İşaretleyip \"Onaylı\" ile birlikte kaydedince kullanıcıya \"Üyeliğiniz "
+            "onaylandı\" SMS'i gider. Kaydedildikten sonra işaret otomatik kalkar."
+        ),
+    )
+
     objects = UserManager()
 
     USERNAME_FIELD = "phone_number"
     REQUIRED_FIELDS = ["first_name", "last_name"]
+
+    def save(self, *args, **kwargs):
+        should_notify = self.send_approval_sms and self.is_approved
+        if should_notify:
+            self.send_approval_sms = False
+            update_fields = kwargs.get("update_fields")
+            if update_fields is not None:
+                kwargs["update_fields"] = set(update_fields) | {"send_approval_sms"}
+        super().save(*args, **kwargs)
+        if should_notify:
+            from .sms import SmsSendError, send_sms
+
+            try:
+                send_sms(
+                    self.phone_number,
+                    "Arı Leasing Emlak uygulamasındaki üyeliğiniz onaylandı. Uygulamaya giriş yapabilirsiniz.",
+                )
+            except SmsSendError:
+                logger.exception("Onay SMS'i gönderilemedi (%s)", self.phone_number)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.phone_number})"

@@ -7,7 +7,7 @@ from .models import OTPCode, User, AuthEvent, EventType, FailReason
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     ordering = ["-date_joined"]
-    list_display = ["phone_number", "first_name", "last_name", "company_name", "is_approved", "is_admin", "is_yetkili", "is_staff"]
+    list_display = ["phone_number", "first_name", "last_name", "company_name", "is_approved", "send_approval_sms", "is_admin", "is_yetkili", "is_staff"]
     list_filter = ["is_approved", "is_admin", "is_yetkili", "is_staff", "is_active"]
     search_fields = ["phone_number", "first_name", "last_name"]
     fieldsets = (
@@ -31,6 +31,7 @@ class UserAdmin(DjangoUserAdmin):
                 "fields": (
                     "is_active",
                     "is_approved",
+                    "send_approval_sms",
                     "is_admin",
                     "is_yetkili",
                     "is_staff",
