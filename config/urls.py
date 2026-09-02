@@ -18,7 +18,10 @@ urlpatterns = [
 
     # Public, unauthenticated — linked from the Google Play "Data safety" account
     # deletion field, so it must be reachable without the app installed.
-    path('hesap-silme/', account_deletion, name='account-deletion'),
+    # Lives under /api/ specifically because nginx's site config (nginx/conf.d/emlak.conf)
+    # only proxies /admin/ and /api/ to the Django container; anything else falls through
+    # to an unrelated, empty static root and 404s.
+    path('api/hesap-silme/', account_deletion, name='account-deletion'),
 
     path('api/auth/', include('accounts.urls')),
     path('api/properties/', include('properties.urls')),
