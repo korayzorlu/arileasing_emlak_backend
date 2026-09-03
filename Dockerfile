@@ -18,4 +18,8 @@ RUN chmod +x entrypoint.sh && python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-ENTRYPOINT ["./entrypoint.sh"]
+# Invoked via "sh" rather than executed directly: the app dir is now bind-mounted live
+# (see docker-compose.yml), so the executable bit baked in above no longer travels with
+# it — the host's copy of entrypoint.sh is what actually runs, and its permissions can
+# vary (e.g. a fresh git checkout). Reading it as a shell script sidesteps that entirely.
+ENTRYPOINT ["sh", "./entrypoint.sh"]
