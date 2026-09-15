@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/properties/', include('properties.urls')),
     path('api/whatsapp/', include('whatsapp.urls')),
     path('api/brochure/', include('brochure.urls')),
+    path('api/communication/', include('communication.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

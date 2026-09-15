@@ -5,10 +5,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc \
-    && rm -rf /var/lib/apt/lists/*
-
+# No apt packages needed — every dependency in requirements.txt ships a prebuilt wheel
+# for this image's platform, so there's nothing here that actually needs a C compiler.
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

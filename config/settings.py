@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'properties',
     'whatsapp',
     'brochure',
+    'communication',
 ]
 
 MIDDLEWARE = [
