@@ -5,7 +5,6 @@ from django.http import HttpResponseForbidden, JsonResponse, FileResponse, HttpR
 from django.conf import settings
 from asgiref.sync import async_to_sync
 
-from communication.models import WhatsAppContact,WhatsAppMessage
 
 import os
 import json
