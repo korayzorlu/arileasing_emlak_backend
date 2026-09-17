@@ -18,6 +18,10 @@ class WhatsAppWebhookView(View):
         token = request.GET.get("hub.verify_token")
         challenge = request.GET.get("hub.challenge")
 
+        print(mode)
+        print(token)
+        print(challenge)
+
         if mode == "subscribe" and token == settings.WB_VERIFY_TOKEN:
             return HttpResponse(challenge, content_type="text/plain")
         return HttpResponseForbidden()
