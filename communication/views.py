@@ -4,6 +4,8 @@ from django.views import View
 from django.http import HttpResponseForbidden, JsonResponse, FileResponse, HttpResponse, response
 from django.conf import settings
 from asgiref.sync import async_to_sync
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 
 import os
@@ -15,6 +17,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+@method_decorator(csrf_exempt, name="dispatch")
 class WhatsAppWebhookView(View):
     def get(self, request, *args, **kwargs):
         mode = request.GET.get("hub.mode")
