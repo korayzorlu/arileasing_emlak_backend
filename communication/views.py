@@ -35,7 +35,7 @@ class WhatsAppWebhookView(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
     
-        logger.info("WA webhook: %s", json.dumps(data, ensure_ascii=False))
+        print("WA webhook: %s", json.dumps(data, ensure_ascii=False))
 
         try:
             resp = requests.post(
@@ -44,7 +44,7 @@ class WhatsAppWebhookView(View):
                 json=data,
                 timeout=10,
             )
-            logger.info("arinet forward: status=%s body=%s", resp.status_code, resp.text[:500])
+            print("arinet forward: status=%s body=%s", resp.status_code, resp.text[:500])
         except Exception:
-            logger.exception("arinet forward hatası")
+            print("arinet forward hatası")
         return HttpResponse(status=200)
