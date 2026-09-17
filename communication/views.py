@@ -11,6 +11,9 @@ import json
 from decimal import Decimal
 from datetime import datetime
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 class WhatsAppWebhookView(View):
     def get(self, request, *args, **kwargs):
@@ -28,6 +31,8 @@ class WhatsAppWebhookView(View):
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
+    
+        logger.info("WA webhook: %s", json.dumps(data, ensure_ascii=False))
 
         response = requests.post(
             "https://arinet.arileasing.com.tr/api/communication/whatsapp_webhook/",
