@@ -39,7 +39,7 @@ class WhatsAppWebhookView(View):
 
         response = requests.post(
             "https://arinet.arileasing.com.tr/api/communication/whatsapp_webhook/",
-            headers={"X-Api-Key": settings.EMLAK_WHATSAPP_INGEST_API_KEY},
+            headers={"X-Api-Key": settings.WHATSAPP_INGEST_API_KEY},
             json=data,
         )
 
