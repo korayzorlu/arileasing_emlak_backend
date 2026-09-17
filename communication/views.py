@@ -37,13 +37,14 @@ class WhatsAppWebhookView(View):
     
         logger.info("WA webhook: %s", json.dumps(data, ensure_ascii=False))
 
-        response = requests.post(
-            "https://arinet.arileasing.com.tr/api/communication/whatsapp_webhook/",
-            headers={"X-Api-Key": settings.WHATSAPP_INGEST_API_KEY},
-            json=data,
-        )
-
-        print(response.status_code)
-        print(response.json())
-
+        try:
+            resp = requests.post(
+                "https://arinet.arileasing.com.tr/api/communication/whatsapp_webhook/",
+                headers={"X-Api-Key": settings.WHATSAPP_INGEST_API_KEY},
+                json=data,
+                timeout=10,
+            )
+            logger.info("arinet forward: status=%s body=%s", resp.status_code, resp.text[:500])
+        except Exception:
+            logger.exception("arinet forward hatası")
         return HttpResponse(status=200)
